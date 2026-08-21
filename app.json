@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "scheme": "studynotes",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.joydip.studyNotes"
@@ -15,21 +15,14 @@
     "android": {
       "package": "com.joydip.studyNotes",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundColor": "#4A90D9"
       },
-      "edgeToEdgeEnabled": true
+      "permissions": []
     },
     "plugins": [
       "expo-router",
-      "expo-sqlite",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/notification-icon.png",
-          "color": "#4A90D9"
-        }
-      ]
+      "expo-sqlite"
     ]
   }
 }
