@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  interpolate,
-  Easing,
-} from 'react-native-reanimated';
+import React, { useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../theme';
 
@@ -24,31 +23,35 @@ const FlashcardView: React.FC<FlashcardViewProps> = ({
   onFlip,
 }) => {
   const theme = useTheme();
-  const flipProgress = useSharedValue(0);
+  const flipAnim = useRef(new Animated.Value(0)).current;
+  const frontOpacity = useRef(new Animated.Value(1)).current;
+  const backOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    flipProgress.value = withTiming(isFlipped ? 1 : 0, {
-      duration: 400,
-      easing: Easing.inOut(Easing.ease),
-    });
-  }, [isFlipped, flipProgress]);
+    Animated.parallel([
+      Animated.timing(flipAnim, {
+        toValue: isFlipped ? 1 : 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.sequence(isFlipped ? [
+        Animated.timing(frontOpacity, { toValue: 0, duration: 200, useNativeDriver: true }),
+        Animated.timing(backOpacity, { toValue: 1, duration: 200, useNativeDriver: true }),
+      ] : [
+        Animated.timing(backOpacity, { toValue: 0, duration: 200, useNativeDriver: true }),
+        Animated.timing(frontOpacity, { toValue: 1, duration: 200, useNativeDriver: true }),
+      ]),
+    ]).start();
+  }, [isFlipped, flipAnim, frontOpacity, backOpacity]);
 
-  const frontStyle = useAnimatedStyle(() => {
-    const rotateY = interpolate(flipProgress.value, [0, 1], [0, 180]);
-    const opacity = interpolate(flipProgress.value, [0, 0.5, 1], [1, 0, 0]);
-    return {
-      transform: [{ rotateY: `${rotateY}deg` }],
-      opacity,
-    };
+  const frontRotateY = flipAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg'],
   });
 
-  const backStyle = useAnimatedStyle(() => {
-    const rotateY = interpolate(flipProgress.value, [0, 1], [-180, 0]);
-    const opacity = interpolate(flipProgress.value, [0, 0.5, 1], [0, 0, 1]);
-    return {
-      transform: [{ rotateY: `${rotateY}deg` }],
-      opacity,
-    };
+  const backRotateY = flipAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['-180deg', '0deg'],
   });
 
   return (
@@ -62,6 +65,7 @@ const FlashcardView: React.FC<FlashcardViewProps> = ({
       <Animated.View
         style={[
           styles.card,
+          styles.absoluteCard,
           {
             backgroundColor: theme.colors.surface,
             borderRadius: theme.borderRadius.xl,
@@ -71,40 +75,20 @@ const FlashcardView: React.FC<FlashcardViewProps> = ({
             shadowRadius: 12,
             elevation: 6,
           },
-          frontStyle,
-          styles.absoluteCard,
+          { transform: [{ rotateY: frontRotateY }], opacity: frontOpacity },
         ]}
       >
         <View style={styles.labelContainer}>
-          <Text
-            style={[
-              styles.label,
-              { color: theme.colors.primary, fontSize: theme.fontSize.sm, fontWeight: theme.fontWeight.semibold },
-            ]}
-          >
+          <Text style={[styles.label, { color: theme.colors.primary, fontSize: theme.fontSize.sm, fontWeight: theme.fontWeight.semibold }]}>
             QUESTION
           </Text>
         </View>
-        <Text
-          style={[
-            styles.text,
-            { color: theme.colors.text, fontSize: theme.fontSize.xl, fontWeight: theme.fontWeight.medium },
-          ]}
-        >
+        <Text style={[styles.text, { color: theme.colors.text, fontSize: theme.fontSize.xl, fontWeight: theme.fontWeight.medium }]}>
           {question}
         </Text>
         <View style={styles.flipHint}>
-          <MaterialCommunityIcons
-            name="rotate-3d-variant"
-            size={20}
-            color={theme.colors.textMuted}
-          />
-          <Text
-            style={[
-              styles.flipHintText,
-              { color: theme.colors.textMuted, fontSize: theme.fontSize.xs },
-            ]}
-          >
+          <MaterialCommunityIcons name="rotate-3d-variant" size={20} color={theme.colors.textMuted} />
+          <Text style={[styles.flipHintText, { color: theme.colors.textMuted, fontSize: theme.fontSize.xs }]}>
             Tap to reveal answer
           </Text>
         </View>
@@ -113,6 +97,7 @@ const FlashcardView: React.FC<FlashcardViewProps> = ({
       <Animated.View
         style={[
           styles.card,
+          styles.absoluteCard,
           {
             backgroundColor: theme.colors.primaryLight,
             borderRadius: theme.borderRadius.xl,
@@ -122,40 +107,20 @@ const FlashcardView: React.FC<FlashcardViewProps> = ({
             shadowRadius: 12,
             elevation: 6,
           },
-          backStyle,
-          styles.absoluteCard,
+          { transform: [{ rotateY: backRotateY }], opacity: backOpacity },
         ]}
       >
         <View style={styles.labelContainer}>
-          <Text
-            style={[
-              styles.label,
-              { color: theme.colors.primary, fontSize: theme.fontSize.sm, fontWeight: theme.fontWeight.semibold },
-            ]}
-          >
+          <Text style={[styles.label, { color: theme.colors.primary, fontSize: theme.fontSize.sm, fontWeight: theme.fontWeight.semibold }]}>
             ANSWER
           </Text>
         </View>
-        <Text
-          style={[
-            styles.text,
-            { color: theme.colors.text, fontSize: theme.fontSize.xl, fontWeight: theme.fontWeight.medium },
-          ]}
-        >
+        <Text style={[styles.text, { color: theme.colors.text, fontSize: theme.fontSize.xl, fontWeight: theme.fontWeight.medium }]}>
           {answer}
         </Text>
         <View style={styles.flipHint}>
-          <MaterialCommunityIcons
-            name="rotate-3d-variant"
-            size={20}
-            color={theme.colors.textMuted}
-          />
-          <Text
-            style={[
-              styles.flipHintText,
-              { color: theme.colors.textMuted, fontSize: theme.fontSize.xs },
-            ]}
-          >
+          <MaterialCommunityIcons name="rotate-3d-variant" size={20} color={theme.colors.textMuted} />
+          <Text style={[styles.flipHintText, { color: theme.colors.textMuted, fontSize: theme.fontSize.xs }]}>
             Tap to see question
           </Text>
         </View>
@@ -165,9 +130,7 @@ const FlashcardView: React.FC<FlashcardViewProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    height: 300,
-  },
+  container: { height: 300 },
   absoluteCard: {
     position: 'absolute',
     top: 0,
@@ -178,31 +141,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 32,
   },
-  card: {
-    width: '100%',
-    height: '100%',
-    backfaceVisibility: 'hidden',
-  },
-  labelContainer: {
-    marginBottom: 16,
-  },
-  label: {
-    letterSpacing: 2,
-  },
-  text: {
-    textAlign: 'center',
-    lineHeight: 28,
-    flex: 1,
-    textAlignVertical: 'center',
-  },
-  flipHint: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  flipHintText: {
-    marginLeft: 6,
-  },
+  card: { width: '100%', height: '100%' },
+  labelContainer: { marginBottom: 16 },
+  label: { letterSpacing: 2 },
+  text: { textAlign: 'center', lineHeight: 28, flex: 1, textAlignVertical: 'center' },
+  flipHint: { flexDirection: 'row', alignItems: 'center', marginTop: 16 },
+  flipHintText: { marginLeft: 6 },
 });
 
 export default React.memo(FlashcardView);
