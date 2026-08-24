@@ -18,7 +18,10 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundColor": "#4A90D9"
       },
-      "permissions": []
+      "permissions": [],
+      "compileSdkVersion": 36,
+      "targetSdkVersion": 36,
+      "minSdkVersion": 24
     },
     "plugins": [
       "expo-router",

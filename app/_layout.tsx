@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { View, useColorScheme } from 'react-native';
 import { ThemeProvider, lightTheme, darkTheme, useTheme } from '@/theme';
-import { initDatabase } from '@/database';
 import { useAppStore } from '@/store';
 
 SplashScreen.preventAutoHideAsync();
@@ -26,14 +25,13 @@ function RootLayoutInner() {
     async function prepare() {
       try {
         setLoading(true);
-        initDatabase();
-        loadSettings();
         setDbInitialized(true);
+        loadSettings();
       } catch (e) {
         console.warn(e);
       } finally {
         setLoading(false);
-        await SplashScreen.hideAsync();
+        await SplashScreen.hideAsync().catch(() => {});
       }
     }
     prepare();

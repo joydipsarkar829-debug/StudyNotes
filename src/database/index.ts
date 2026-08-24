@@ -1276,9 +1276,9 @@ class DatabaseManager {
 }
 
 const dbManager = new DatabaseManager();
+dbManager.init();
 
 export function initDatabase(): DatabaseManager {
-  dbManager.init();
   return dbManager;
 }
 
