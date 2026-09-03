@@ -165,8 +165,9 @@ export default function NotesScreen() {
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Header
         title="Notes"
-        rightIcon="sort-variant"
-        onRightPress={() => setShowSortModal(true)}
+        rightActions={[
+          { icon: 'sort-variant', onPress: () => setShowSortModal(true), label: 'Sort' },
+        ]}
       />
 
       <View style={styles.searchContainer}>

@@ -121,7 +121,14 @@ export default function SubjectsScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Header title="Subjects" />
+      <Header
+        title="Subjects"
+        rightActions={
+          showArchived
+            ? [{ icon: 'archive-arrow-up', onPress: () => setShowArchived(false), label: 'Show active' }]
+            : [{ icon: 'archive', onPress: () => setShowArchived(true), label: 'Show archived' }]
+        }
+      />
 
       <View
         style={[
@@ -155,30 +162,6 @@ export default function SubjectsScreen() {
           </TouchableOpacity>
         )}
       </View>
-
-      <TouchableOpacity
-        style={[styles.archiveToggle, { backgroundColor: showArchived ? theme.colors.primaryLight : theme.colors.surface }]}
-        onPress={() => setShowArchived(!showArchived)}
-        accessibilityRole="button"
-        accessibilityLabel={showArchived ? 'Show active subjects' : 'Show archived subjects'}
-      >
-        <MaterialCommunityIcons
-          name={showArchived ? 'archive-arrow-up' : 'archive'}
-          size={18}
-          color={showArchived ? theme.colors.primary : theme.colors.textSecondary}
-        />
-        <Text
-          style={[
-            styles.archiveToggleText,
-            {
-              color: showArchived ? theme.colors.primary : theme.colors.textSecondary,
-              fontSize: theme.fontSize.sm,
-            },
-          ]}
-        >
-          {showArchived ? 'Active Subjects' : 'Archived'}
-        </Text>
-      </TouchableOpacity>
 
       {filteredSubjects.length === 0 && !searchQuery ? (
         <EmptyState

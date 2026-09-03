@@ -25,12 +25,12 @@ const FAB: React.FC<FABProps> = ({
         styles.container,
         {
           backgroundColor: fabColor,
-          borderRadius: theme.borderRadius.xl,
-          shadowColor: theme.colors.shadow,
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 8,
-          elevation: 6,
+          borderRadius: 18,
+          shadowColor: fabColor,
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.35,
+          shadowRadius: 12,
+          elevation: 8,
         },
         style,
       ]}
@@ -41,7 +41,7 @@ const FAB: React.FC<FABProps> = ({
     >
       <MaterialCommunityIcons
         name={icon as any}
-        size={28}
+        size={26}
         color="#FFFFFF"
       />
     </TouchableOpacity>
@@ -52,9 +52,9 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     bottom: 24,
-    right: 24,
-    width: 56,
-    height: 56,
+    right: 20,
+    width: 58,
+    height: 58,
     justifyContent: 'center',
     alignItems: 'center',
   },

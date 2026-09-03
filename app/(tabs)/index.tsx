@@ -8,6 +8,7 @@ import {
   StyleSheet,
   RefreshControl,
   type TextStyle,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -32,12 +33,12 @@ interface QuickAction {
 }
 
 const QUICK_ACTIONS: QuickAction[] = [
-  { key: 'addNote', label: 'Add Note', icon: 'note-plus', color: '#4A90D9', route: '/note/create' },
-  { key: 'addSubject', label: 'Add Subject', icon: 'folder-plus', color: '#7C5CFC', route: '/subject/create' },
+  { key: 'addNote', label: 'New Note', icon: 'note-plus', color: '#4A90D9', route: '/note/create' },
+  { key: 'addSubject', label: 'Subjects', icon: 'folder-plus', color: '#7C5CFC', route: '/subject/create' },
+  { key: 'timer', label: 'Timer', icon: 'timer-outline', color: '#F39C12', route: '/timer' },
   { key: 'search', label: 'Search', icon: 'magnify', color: '#2ECC71', route: '/search' },
+  { key: 'revision', label: 'Revise', icon: 'brain', color: '#9B59B6', route: '/revision' },
   { key: 'favorites', label: 'Favorites', icon: 'heart', color: '#E74C3C', route: '/favorites' },
-  { key: 'timer', label: 'Study Timer', icon: 'timer-outline', color: '#F39C12', route: '/timer' },
-  { key: 'revision', label: 'Quick Revision', icon: 'brain', color: '#9B59B6', route: '/revision' },
 ];
 
 export default function HomeScreen() {
@@ -114,32 +115,45 @@ export default function HomeScreen() {
           justifyContent: 'space-between',
           alignItems: 'center',
           paddingHorizontal: 20,
-          paddingTop: 16,
-          paddingBottom: 8,
+          paddingTop: Platform.OS === 'ios' ? 48 : 16,
+          paddingBottom: 4,
+        },
+        headerLeft: {
+          flex: 1,
         },
         greetingText: {
           color: theme.colors.textSecondary,
-          fontSize: theme.fontSize.md,
+          fontSize: theme.fontSize.sm,
           fontWeight: theme.fontWeight.medium as TextStyle['fontWeight'],
+        },
+        titleRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: 2,
         },
         titleText: {
           color: theme.colors.text,
           fontSize: theme.fontSize.xxl,
           fontWeight: theme.fontWeight.bold as TextStyle['fontWeight'],
-          marginTop: 2,
+          flex: 1,
         },
-        headerIcon: {
-          width: 44,
-          height: 44,
-          borderRadius: 22,
-          backgroundColor: theme.colors.primaryLight,
+        headerActions: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+        },
+        headerIconBtn: {
+          width: 42,
+          height: 42,
+          borderRadius: 14,
+          backgroundColor: theme.colors.surfaceVariant,
           justifyContent: 'center',
           alignItems: 'center',
         },
         statsRow: {
           flexDirection: 'row',
           paddingHorizontal: 12,
-          gap: 0,
+          marginTop: 8,
         },
         statCardWrapper: {
           flex: 1,
@@ -154,14 +168,14 @@ export default function HomeScreen() {
           padding: 16,
           shadowColor: theme.colors.shadow,
           shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.05,
+          shadowOpacity: 0.06,
           shadowRadius: 4,
-          elevation: 1,
+          elevation: 2,
         },
         streakIconContainer: {
           width: 48,
           height: 48,
-          borderRadius: 24,
+          borderRadius: 14,
           backgroundColor: '#FFF3E0',
           justifyContent: 'center',
           alignItems: 'center',
@@ -213,14 +227,14 @@ export default function HomeScreen() {
           backgroundColor: theme.colors.surface,
           shadowColor: theme.colors.shadow,
           shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.04,
-          shadowRadius: 3,
-          elevation: 1,
+          shadowOpacity: 0.05,
+          shadowRadius: 4,
+          elevation: 2,
         },
         actionIconWrapper: {
           width: 44,
           height: 44,
-          borderRadius: 22,
+          borderRadius: 14,
           justifyContent: 'center',
           alignItems: 'center',
           marginBottom: 8,
@@ -231,6 +245,24 @@ export default function HomeScreen() {
           color: theme.colors.textSecondary,
           textAlign: 'center',
         },
+        sectionHeader: {
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingHorizontal: 20,
+          marginTop: 20,
+          marginBottom: 8,
+        },
+        sectionTitle: {
+          color: theme.colors.text,
+          fontSize: theme.fontSize.md,
+          fontWeight: theme.fontWeight.semibold as TextStyle['fontWeight'],
+        },
+        sectionAction: {
+          color: theme.colors.primary,
+          fontSize: theme.fontSize.sm,
+          fontWeight: theme.fontWeight.medium as TextStyle['fontWeight'],
+        },
         continueContainer: {
           marginHorizontal: 16,
           marginTop: 4,
@@ -240,9 +272,9 @@ export default function HomeScreen() {
           borderLeftWidth: 4,
           shadowColor: theme.colors.shadow,
           shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.05,
+          shadowOpacity: 0.06,
           shadowRadius: 4,
-          elevation: 1,
+          elevation: 2,
         },
         continueLabel: {
           color: theme.colors.textMuted,
@@ -262,6 +294,11 @@ export default function HomeScreen() {
           color: theme.colors.textSecondary,
           fontSize: theme.fontSize.sm,
         },
+        continueRight: {
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginLeft: 12,
+        },
         recentNotesContainer: {
           paddingHorizontal: 4,
         },
@@ -277,14 +314,14 @@ export default function HomeScreen() {
           marginBottom: 8,
           shadowColor: theme.colors.shadow,
           shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.03,
+          shadowOpacity: 0.04,
           shadowRadius: 2,
           elevation: 1,
         },
         activityIconContainer: {
           width: 40,
           height: 40,
-          borderRadius: 20,
+          borderRadius: 12,
           justifyContent: 'center',
           alignItems: 'center',
           marginRight: 12,
@@ -305,6 +342,7 @@ export default function HomeScreen() {
         activityTime: {
           color: theme.colors.textMuted,
           fontSize: theme.fontSize.xs,
+          marginLeft: 8,
         },
       }),
     [theme],
@@ -314,7 +352,7 @@ export default function HomeScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <View>
+          <View style={styles.headerLeft}>
             <Text style={styles.greetingText} accessibilityLabel={getGreeting()}>
               {getGreeting()}
             </Text>
@@ -326,13 +364,19 @@ export default function HomeScreen() {
               {APP_NAME}
             </Text>
           </View>
-          <View style={styles.headerIcon} accessibilityLabel="Settings">
+          <TouchableOpacity
+            style={styles.headerIconBtn}
+            onPress={() => router.push('/settings' as any)}
+            accessibilityLabel="Settings"
+            accessibilityRole="button"
+            activeOpacity={0.7}
+          >
             <MaterialCommunityIcons
               name="cog-outline"
               size={22}
-              color={theme.colors.primary}
+              color={theme.colors.textSecondary}
             />
-          </View>
+          </TouchableOpacity>
         </View>
         <EmptyState
           icon="notebook-plus"
@@ -361,33 +405,49 @@ export default function HomeScreen() {
         }
       >
         <View style={styles.header}>
-          <View>
+          <View style={styles.headerLeft}>
             <Text style={styles.greetingText} accessibilityLabel={getGreeting()}>
               {getGreeting()}
             </Text>
-            <Text
-              style={styles.titleText}
-              accessibilityLabel={APP_NAME}
-              accessibilityRole="header"
-            >
-              {APP_NAME}
-            </Text>
+            <View style={styles.titleRow}>
+              <Text
+                style={styles.titleText}
+                accessibilityLabel={APP_NAME}
+                accessibilityRole="header"
+              >
+                {APP_NAME}
+              </Text>
+            </View>
           </View>
-          <TouchableOpacity
-            style={styles.headerIcon}
-            onPress={() => router.push('/settings' as any)}
-            accessibilityLabel="Open settings"
-            accessibilityRole="button"
-          >
-            <MaterialCommunityIcons
-              name="cog-outline"
-              size={22}
-              color={theme.colors.primary}
-            />
-          </TouchableOpacity>
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.headerIconBtn}
+              onPress={() => router.push('/search' as any)}
+              accessibilityLabel="Search"
+              accessibilityRole="button"
+              activeOpacity={0.7}
+            >
+              <MaterialCommunityIcons
+                name="magnify"
+                size={22}
+                color={theme.colors.textSecondary}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.headerIconBtn}
+              onPress={() => router.push('/settings' as any)}
+              accessibilityLabel="Settings"
+              accessibilityRole="button"
+              activeOpacity={0.7}
+            >
+              <MaterialCommunityIcons
+                name="cog-outline"
+                size={22}
+                color={theme.colors.textSecondary}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
-
-        <SectionHeader title="Today's Summary" />
 
         <View style={styles.statsRow}>
           <View style={styles.statCardWrapper}>
@@ -444,7 +504,9 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <SectionHeader title="Quick Actions" />
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
+        </View>
 
         <View style={styles.actionsGrid}>
           {QUICK_ACTIONS.map((action) => (
@@ -476,7 +538,9 @@ export default function HomeScreen() {
 
         {lastSession && (
           <>
-            <SectionHeader title="Continue Studying" />
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Continue Studying</Text>
+            </View>
             <TouchableOpacity
               style={[
                 styles.continueContainer,
@@ -491,26 +555,39 @@ export default function HomeScreen() {
               accessibilityRole="button"
               activeOpacity={0.7}
             >
-              <Text style={styles.continueLabel}>LAST STUDY SESSION</Text>
-              <Text style={styles.continueTitle} numberOfLines={1}>
-                {lastSession.subjectId
-                  ? getSubjectName(lastSession.subjectId) || 'Study Session'
-                  : 'Study Session'}
-              </Text>
-              <Text style={styles.continueMeta}>
-                {formatMinutes(Math.floor(lastSession.duration / 60))} · {getRelativeTime(lastSession.startedAt)}
-              </Text>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.continueLabel}>LAST STUDY SESSION</Text>
+                <Text style={styles.continueTitle} numberOfLines={1}>
+                  {lastSession.subjectId
+                    ? getSubjectName(lastSession.subjectId) || 'Study Session'
+                    : 'Study Session'}
+                </Text>
+                <Text style={styles.continueMeta}>
+                  {formatMinutes(Math.floor(lastSession.duration / 60))} · {getRelativeTime(lastSession.startedAt)}
+                </Text>
+              </View>
+              <View style={styles.continueRight}>
+                <MaterialCommunityIcons
+                  name="chevron-right"
+                  size={24}
+                  color={theme.colors.textMuted}
+                />
+              </View>
             </TouchableOpacity>
           </>
         )}
 
         {recentNotes.length > 0 && (
           <>
-            <SectionHeader
-              title="Recently Added"
-              actionTitle="See All"
-              onAction={() => router.push('/notes' as any)}
-            />
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Recently Added</Text>
+              <TouchableOpacity
+                onPress={() => router.push('/notes' as any)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.sectionAction}>See All</Text>
+              </TouchableOpacity>
+            </View>
             <FlatList
               data={recentNotes}
               keyExtractor={(item) => item.id}
@@ -529,7 +606,9 @@ export default function HomeScreen() {
 
         {sessions.length > 0 && (
           <>
-            <SectionHeader title="Recent Activity" />
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Recent Activity</Text>
+            </View>
             <View style={styles.activityContainer}>
               {sessions.slice(0, 4).map((session) => {
                 const isPomodoro = session.type === 'pomodoro';

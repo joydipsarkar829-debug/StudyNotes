@@ -50,99 +50,114 @@ const NoteCard: React.FC<NoteCardProps> = ({
           borderRadius: theme.borderRadius.lg,
           shadowColor: theme.colors.shadow,
           shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.05,
+          shadowOpacity: 0.06,
           shadowRadius: 4,
-          elevation: 1,
+          elevation: 2,
         },
       ]}
     >
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          {indicators.length > 0 && (
-            <View style={styles.indicators}>
-              {indicators.map((ind) => (
-                <MaterialCommunityIcons
-                  key={ind}
-                  name={indicatorIcons[ind] as any}
-                  size={14}
-                  color={indicatorColors[ind]}
-                  style={styles.indicator}
-                />
+      <View style={styles.innerRow}>
+        <View style={styles.contentArea}>
+          <View style={styles.header}>
+            <View style={styles.headerLeft}>
+              {indicators.length > 0 && (
+                <View style={styles.indicators}>
+                  {indicators.map((ind) => (
+                    <MaterialCommunityIcons
+                      key={ind}
+                      name={indicatorIcons[ind] as any}
+                      size={14}
+                      color={indicatorColors[ind]}
+                      style={styles.indicator}
+                    />
+                  ))}
+                </View>
+              )}
+            </View>
+            <NoteTypeBadge type={note.type} />
+          </View>
+
+          <Text
+            style={[
+              styles.title,
+              { color: theme.colors.text, fontSize: theme.fontSize.lg, fontWeight: theme.fontWeight.semibold },
+            ]}
+            numberOfLines={2}
+          >
+            {note.title}
+          </Text>
+
+          <Text
+            style={[
+              styles.excerpt,
+              { color: theme.colors.textSecondary, fontSize: theme.fontSize.sm },
+            ]}
+            numberOfLines={2}
+          >
+            {note.content}
+          </Text>
+
+          <View style={styles.footer}>
+            <View style={styles.footerLeft}>
+              {subjectName ? (
+                <Text
+                  style={[
+                    styles.subjectName,
+                    { color: theme.colors.primary, fontSize: theme.fontSize.xs, fontWeight: theme.fontWeight.medium },
+                  ]}
+                  numberOfLines={1}
+                >
+                  {subjectName}
+                </Text>
+              ) : null}
+              {subjectName ? (
+                <Text style={[styles.footerDot, { color: theme.colors.textMuted }]}> · </Text>
+              ) : null}
+              <Text
+                style={[
+                  styles.date,
+                  { color: theme.colors.textMuted, fontSize: theme.fontSize.xs },
+                ]}
+              >
+                {formattedDate}
+              </Text>
+            </View>
+          </View>
+
+          {note.tags.length > 0 && (
+            <View style={styles.tags}>
+              {note.tags.slice(0, 3).map((tag) => (
+                <TagChip key={tag} name={tag} />
               ))}
+              {note.tags.length > 3 && (
+                <Text
+                  style={[
+                    styles.moreTags,
+                    { color: theme.colors.textMuted, fontSize: theme.fontSize.xs },
+                  ]}
+                >
+                  +{note.tags.length - 3}
+                </Text>
+              )}
             </View>
           )}
         </View>
-        <NoteTypeBadge type={note.type} />
-      </View>
 
-      <Text
-        style={[
-          styles.title,
-          { color: theme.colors.text, fontSize: theme.fontSize.lg, fontWeight: theme.fontWeight.semibold },
-        ]}
-        numberOfLines={2}
-      >
-        {note.title}
-      </Text>
-
-      <Text
-        style={[
-          styles.excerpt,
-          { color: theme.colors.textSecondary, fontSize: theme.fontSize.sm },
-        ]}
-        numberOfLines={2}
-      >
-        {note.content}
-      </Text>
-
-      <View style={styles.footer}>
-        <View style={styles.footerLeft}>
-          {subjectName && (
-            <Text
-              style={[
-                styles.subjectName,
-                { color: theme.colors.primary, fontSize: theme.fontSize.xs, fontWeight: theme.fontWeight.medium },
-              ]}
-              numberOfLines={1}
-            >
-              {subjectName}
-            </Text>
-          )}
-          <Text
-            style={[
-              styles.date,
-              { color: theme.colors.textMuted, fontSize: theme.fontSize.xs },
-            ]}
-          >
-            {formattedDate}
-          </Text>
+        <View style={styles.chevronContainer}>
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={22}
+            color={theme.colors.textMuted}
+          />
         </View>
       </View>
-
-      {note.tags.length > 0 && (
-        <View style={styles.tags}>
-          {note.tags.slice(0, 3).map((tag) => (
-            <TagChip key={tag} name={tag} />
-          ))}
-          {note.tags.length > 3 && (
-            <Text
-              style={[
-                styles.moreTags,
-                { color: theme.colors.textMuted, fontSize: theme.fontSize.xs },
-              ]}
-            >
-              +{note.tags.length - 3}
-            </Text>
-          )}
-        </View>
-      )}
     </View>
   );
 
   if (onPress) {
     return (
       <TouchableOpacity
-        activeOpacity={0.7}
+        activeOpacity={0.6}
         onPress={onPress}
         accessibilityRole="button"
         accessibilityLabel={`Note: ${note.title}`}
@@ -159,13 +174,28 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     marginHorizontal: 16,
-    marginVertical: 6,
+    marginVertical: 5,
+  },
+  innerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  contentArea: {
+    flex: 1,
+  },
+  chevronContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
+    marginTop: 4,
+    width: 24,
+    height: 24,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -195,9 +225,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  subjectName: {
-    marginRight: 8,
-  },
+  footerDot: {},
+  subjectName: {},
   date: {},
   tags: {
     flexDirection: 'row',

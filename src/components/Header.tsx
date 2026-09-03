@@ -3,12 +3,19 @@ import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../theme';
 
+interface HeaderAction {
+  icon: string;
+  onPress: () => void;
+  label?: string;
+}
+
 interface HeaderProps {
   title: string;
   subtitle?: string;
   onBack?: () => void;
   rightIcon?: string;
   onRightPress?: () => void;
+  rightActions?: HeaderAction[];
   showBack?: boolean;
 }
 
@@ -18,6 +25,7 @@ const Header: React.FC<HeaderProps> = ({
   onBack,
   rightIcon,
   onRightPress,
+  rightActions,
   showBack = false,
 }) => {
   const theme = useTheme();
@@ -37,18 +45,18 @@ const Header: React.FC<HeaderProps> = ({
         {showBack ? (
           <TouchableOpacity
             onPress={onBack}
-            style={[styles.iconButton, { borderRadius: theme.borderRadius.sm }]}
+            style={[styles.iconButton, { backgroundColor: theme.colors.surfaceVariant, borderRadius: theme.borderRadius.md }]}
             accessibilityLabel="Go back"
             accessibilityRole="button"
           >
             <MaterialCommunityIcons
               name="arrow-left"
-              size={24}
+              size={22}
               color={theme.colors.text}
             />
           </TouchableOpacity>
         ) : (
-          <View style={styles.iconButton} />
+          <View style={styles.spacer} />
         )}
 
         <View style={styles.titleContainer}>
@@ -81,22 +89,38 @@ const Header: React.FC<HeaderProps> = ({
           )}
         </View>
 
-        {rightIcon ? (
-          <TouchableOpacity
-            onPress={onRightPress}
-            style={[styles.iconButton, { borderRadius: theme.borderRadius.sm }]}
-            accessibilityLabel={rightIcon}
-            accessibilityRole="button"
-          >
-            <MaterialCommunityIcons
-              name={rightIcon as any}
-              size={24}
-              color={theme.colors.text}
-            />
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.iconButton} />
-        )}
+        <View style={styles.rightActions}>
+          {rightActions?.map((action, i) => (
+            <TouchableOpacity
+              key={i}
+              onPress={action.onPress}
+              style={[styles.iconButton, { backgroundColor: theme.colors.surfaceVariant, borderRadius: theme.borderRadius.md }]}
+              accessibilityLabel={action.label || action.icon}
+              accessibilityRole="button"
+            >
+              <MaterialCommunityIcons
+                name={action.icon as any}
+                size={20}
+                color={theme.colors.textSecondary}
+              />
+            </TouchableOpacity>
+          ))}
+          {rightIcon && (
+            <TouchableOpacity
+              onPress={onRightPress}
+              style={[styles.iconButton, { backgroundColor: theme.colors.surfaceVariant, borderRadius: theme.borderRadius.md }]}
+              accessibilityLabel={rightIcon}
+              accessibilityRole="button"
+            >
+              <MaterialCommunityIcons
+                name={rightIcon as any}
+                size={20}
+                color={theme.colors.textSecondary}
+              />
+            </TouchableOpacity>
+          )}
+          {!rightIcon && !rightActions && <View style={styles.spacer} />}
+        </View>
       </View>
     </View>
   );
@@ -115,14 +139,19 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flex: 1,
-    alignItems: 'center',
   },
-  title: {
-    textAlign: 'center',
-  },
+  title: {},
   subtitle: {
-    textAlign: 'center',
     marginTop: 2,
+  },
+  spacer: {
+    width: 40,
+    height: 40,
+  },
+  rightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   iconButton: {
     width: 40,
