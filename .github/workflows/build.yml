@@ -34,10 +34,8 @@ jobs:
       - name: Patch build config
         run: |
           sed -i 's/newArchEnabled=true/newArchEnabled=false/' android/gradle.properties
-          sed -i 's/android.enableMinifyInReleaseBuilds ?: false/android.enableMinifyInReleaseBuilds ?: true/' android/app/build.gradle
-          sed -i 's/android.enableShrinkResourcesInReleaseBuilds.*[:?].*false/android.enableShrinkResourcesInReleaseBuilds ?: true/' android/app/build.gradle
-          echo 'android.enableShrinkResourcesInReleaseBuilds=true' >> android/gradle.properties
           echo 'android.enableMinifyInReleaseBuilds=true' >> android/gradle.properties
+          echo 'android.enableShrinkResourcesInReleaseBuilds=true' >> android/gradle.properties
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
